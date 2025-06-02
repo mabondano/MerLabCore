@@ -1,5 +1,5 @@
 // src/main/java/com/merlab/signals/examples/BasicNNExample4.java
-package com.merlab.signals.examples;
+package com.merlab.nn.examples;
 
 import com.merlab.signals.core.Signal;
 import com.merlab.signals.features.FeatureExtractor;
