@@ -1,4 +1,4 @@
-package com.merlab.signals.examples;
+package com.merlab.llm.examples;
 
 import com.merlab.signals.llm.loader.LLMModelLoader;
 import com.merlab.signals.llm.loader.MiniLLMLoader;
