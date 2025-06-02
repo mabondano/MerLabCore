@@ -1,0 +1,75 @@
+package com.merlab.signals.data;
+
+import java.nio.file.Paths;
+import java.util.List;
+
+
+/**
+ * Fábrica para crear DataLoader según el origen de datos configurado.
+ */
+public class DataLoaderFactory {
+
+    public enum Type {
+        CSV,
+        DATABASE,
+        JSON, 
+        HDF5, 
+        HTTP
+    }
+
+    /**
+     * Crea el loader adecuado según el tipo y la configuración.
+     *
+     * @param type  origen de datos
+     * @param cfg   configuración con rutas, credenciales, columnas…
+     * @return un DataLoader listo para usar
+     */
+    public static DataLoader create(Type type, DataLoaderConfig cfg) {
+        switch (type) {
+            case CSV:
+                return new CSVDataLoader(
+                    Paths.get(cfg.getCsvPath()),
+                    cfg.getNumInputs(),
+                    cfg.getNumTargets()
+                );
+            case DATABASE:
+                return new DataSetDatabaseLoader(
+                    cfg.getJdbcUrl(),
+                    cfg.getUser(),
+                    cfg.getPassword(),
+                    cfg.getTable(),
+                    List.of(cfg.getInputCols().split(",")),
+                    List.of(cfg.getTargetCols().split(","))
+                );
+            case JSON:
+                return new JSONDataLoader(
+                    Paths.get(cfg.getJsonPath()),
+                    List.of(cfg.getInputCols().split(",")),
+                    List.of(cfg.getTargetCols().split(","))
+                );   
+            case HDF5:
+                return new HDF5DataLoader(
+                    Paths.get(cfg.getHdf5Path()),
+                    cfg.getHdf5DatasetInputs(),
+                    cfg.getHdf5DatasetTargets()
+                );
+
+            case HTTP:
+                if (cfg.isHttpIsJson()) {
+                    return new HTTPJSONDataLoader(
+                        cfg.getHttpUrl(),
+                        List.of(cfg.getInputCols().split(",")),
+                        List.of(cfg.getTargetCols().split(","))
+                    );
+                } else {
+                    return new HTTPCSVDataLoader(
+                        cfg.getHttpUrl(),
+                        List.of(cfg.getInputCols().split(",")),
+                        List.of(cfg.getTargetCols().split(","))
+                    );
+                }                
+            default:
+                throw new IllegalArgumentException("Tipo de DataLoader no soportado: " + type);
+        }
+    }
+}
