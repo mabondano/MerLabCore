@@ -3,6 +3,8 @@ package com.merlab.signals.data;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.merlab.signals.data.synthetic.SyntheticCirclesLoader;
+
 
 /**
  * Fábrica para crear DataLoader según el origen de datos configurado.
@@ -14,7 +16,8 @@ public class DataLoaderFactory {
         DATABASE,
         JSON, 
         HDF5, 
-        HTTP
+        HTTP,
+        SYNTHETIC_CIRCLES
     }
 
     /**
@@ -60,16 +63,23 @@ public class DataLoaderFactory {
                         cfg.getHttpUrl(),
                         List.of(cfg.getInputCols().split(",")),
                         List.of(cfg.getTargetCols().split(","))
-                    );
+                    );     
                 } else {
                     return new HTTPCSVDataLoader(
                         cfg.getHttpUrl(),
                         List.of(cfg.getInputCols().split(",")),
                         List.of(cfg.getTargetCols().split(","))
                     );
-                }                
+                }    
+            case SYNTHETIC_CIRCLES:
+                return new SyntheticCirclesLoader(
+                    cfg.getSyntheticN(),
+                    cfg.getSyntheticRInt(),
+                    cfg.getSyntheticRExt()
+                );    
             default:
                 throw new IllegalArgumentException("Tipo de DataLoader no soportado: " + type);
         }
     }
 }
+

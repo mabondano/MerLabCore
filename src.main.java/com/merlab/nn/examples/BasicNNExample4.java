@@ -4,12 +4,16 @@ package com.merlab.nn.examples;
 import com.merlab.signals.core.Signal;
 import com.merlab.signals.features.FeatureExtractor;
 import com.merlab.signals.nn.model.RegressionModel;
-import com.merlab.signals.nn.trainer.LinearRegressionTrainer4;
+import com.merlab.signals.nn.model.SimpleRegressionModel;
+import com.merlab.signals.nn.trainer.LinearRegressionTrainer;
 import com.merlab.signals.nn.trainer.RegressionTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer4;
+import com.merlab.signals.nn.trainer.simple.SimpleRegressionTrainer;
 import com.merlab.signals.nn.processor.LinearProcessor;
 import com.merlab.signals.nn.processor.ConfigPerceptronProcessor;
 import com.merlab.signals.nn.processor.ActivationFunctions;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
+import com.merlab.signals.nn.processor.SimpleLinearProcessor;
 import com.merlab.signals.nn.manager.NeuralNetworkManager;
 import com.merlab.signals.core.SignalStack;
 import com.merlab.signals.persistence.DatabaseManager;
@@ -38,13 +42,13 @@ public class BasicNNExample4 {
         }
 
         // 3. Entrenamiento: obtenemos solo el modelo
-        RegressionTrainer trainer = new LinearRegressionTrainer4();
+        SimpleRegressionTrainer trainer = new SimpleLinearRegressionTrainer4();
         Path modelPath = Paths.get("model4.txt");
-        RegressionModel model = trainer.train(feats, targets, modelPath);
+        SimpleRegressionModel model = trainer.train(feats, targets, modelPath);
 
         // 4.a) Inferencia lineal (raw)
         NeuralNetworkProcessor linProc =
-            new LinearProcessor(model.getWeights(), model.getBias());
+            new SimpleLinearProcessor(model.getWeights(), model.getBias());
 
         // 4.b) Inferencia perceptrón (sigmoide)
         NeuralNetworkProcessor percProc =

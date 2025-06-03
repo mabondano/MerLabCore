@@ -4,8 +4,10 @@ package com.merlab.signals.nn.processor;
 /**
  * Contrato para una función de activación en una neurona.
  */
-@FunctionalInterface
+//@FunctionalInterface
 public interface ActivationFunction {
     /** Aplica la función de activación a x y devuelve el resultado. */
     double apply(double x);
+    double derivative(double x);
+    
 }

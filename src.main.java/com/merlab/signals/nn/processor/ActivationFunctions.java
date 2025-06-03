@@ -6,20 +6,42 @@ public enum ActivationFunctions implements ActivationFunction {
         @Override public double apply(double x) {
             return 1.0 / (1.0 + Math.exp(-x));
         }
+        @Override public double derivative(double x) {
+            double s = apply(x);
+            return s * (1 - s);
+        }
     },
     RELU {
         @Override public double apply(double x) {
             return Math.max(0.0, x);
+        }
+        @Override public double derivative(double x) {
+            return x > 0 ? 1.0 : 0.0;
         }
     },
     TANH {
         @Override public double apply(double x) {
             return Math.tanh(x);
         }
+        @Override public double derivative(double x) {
+            double t = apply(x);
+            return 1 - t * t;
+        }
     },
     IDENTITY {
         @Override public double apply(double x) {
             return x;
+        }
+        @Override public double derivative(double x) {
+            return 1.0;
+        }
+    },
+    SOFTMAX {
+        @Override public double apply(double x) {
+            throw new UnsupportedOperationException("Softmax no se aplica elemento a elemento");
+        }
+        @Override public double derivative(double x) {
+            throw new UnsupportedOperationException("Softmax se deriva en vector completo");
         }
     },
     LEAKY_RELU {
@@ -27,10 +49,16 @@ public enum ActivationFunctions implements ActivationFunction {
         @Override public double apply(double x) {
             return (x >= 0) ? x : ALPHA * x;
         }
+        @Override public double derivative(double x) {
+            return x >= 0 ? 1.0 : ALPHA;
+        }
     },
     SOFTPLUS {
         @Override public double apply(double x) {
             return Math.log1p(Math.exp(x));
+        }
+        @Override public double derivative(double x) {
+            return 1.0 / (1.0 + Math.exp(-x));  // idéntico a sigmoid
         }
     },
     ELU {
@@ -38,11 +66,18 @@ public enum ActivationFunctions implements ActivationFunction {
         @Override public double apply(double x) {
             return (x >= 0) ? x : ALPHA * (Math.exp(x) - 1);
         }
+        @Override public double derivative(double x) {
+            return x >= 0 ? 1.0 : ALPHA * Math.exp(x);
+        }
     },
     // NUEVAS
     BINARY_STEP {
         @Override public double apply(double x) {
             return (x >= 0) ? 1.0 : 0.0;
+        }
+        @Override public double derivative(double x) {
+            // no diferenciable en 0, definimos 0
+            return 0.0;
         }
     },
     PARAMETRIC_RELU {
@@ -50,11 +85,18 @@ public enum ActivationFunctions implements ActivationFunction {
         @Override public double apply(double x) {
             return (x >= 0) ? x : ALPHA * x;
         }
+        @Override public double derivative(double x) {
+            return x >= 0 ? 1.0 : ALPHA;
+        }
     },
     SWISH {
         @Override public double apply(double x) {
             double sig = 1.0 / (1.0 + Math.exp(-x));
             return x * sig;
+        }
+        @Override public double derivative(double x) {
+            double s = 1.0 / (1.0 + Math.exp(-x));
+            return s + x * s * (1 - s);
         }
     },
     GELU {
@@ -63,6 +105,13 @@ public enum ActivationFunctions implements ActivationFunction {
             double c = Math.sqrt(2.0 / Math.PI);
             double t = c * (x + 0.044715 * Math.pow(x, 3));
             return 0.5 * x * (1 + Math.tanh(t));
+        }
+        @Override public double derivative(double x) {
+            // derivada aproximada
+            double c = Math.sqrt(2.0 / Math.PI);
+            double t = Math.tanh(c * (x + 0.044715 * Math.pow(x, 3)));
+            double dt_dx = c * (1 + 3 * 0.044715 * x * x) * (1 - t * t);
+            return 0.5 * (1 + t + x * dt_dx);
         }
     },
     SELU {
@@ -73,6 +122,11 @@ public enum ActivationFunctions implements ActivationFunction {
             return (x >= 0) 
                 ? LAMBDA * x 
                 : LAMBDA * (ALPHA * (Math.exp(x) - 1));
+        }
+        @Override public double derivative(double x) {
+            return x >= 0
+                ? LAMBDA
+                : LAMBDA * ALPHA * Math.exp(x);
         }
     };
 }

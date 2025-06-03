@@ -5,8 +5,11 @@ import com.merlab.signals.data.DataSet;
 import com.merlab.signals.features.FeatureExtractor;
 import com.merlab.signals.nn.manager.NeuralNetworkManager;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
-import com.merlab.signals.nn.trainer.LinearRegressionTrainer4;
+import com.merlab.signals.nn.trainer.LinearRegressionTrainer;
 import com.merlab.signals.nn.trainer.RegressionTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer4;
+import com.merlab.signals.nn.trainer.simple.SimpleRegressionTrainer;
 import com.merlab.signals.core.SignalStack;
 import com.merlab.signals.persistence.DatabaseManager;
 
@@ -33,12 +36,12 @@ public class RealDataExample {
         List<com.merlab.signals.core.Signal> targets = data.getTargets();
 
         // 3. Entrenar
-        RegressionTrainer trainer = new LinearRegressionTrainer4();
+        SimpleRegressionTrainer trainer = new SimpleLinearRegressionTrainer4();
         var model = trainer.train(inputs, targets, Paths.get("model_real.txt"));
 
         // 4. Inferencia
         NeuralNetworkProcessor proc = 
-            new com.merlab.signals.nn.processor.LinearProcessor(
+            new com.merlab.signals.nn.processor.SimpleLinearProcessor(
                 model.getWeights(), model.getBias()
             );
         SignalStack stack = new SignalStack();

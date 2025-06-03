@@ -1,5 +1,8 @@
 package com.merlab.signals.data;
 
+import java.nio.file.Path;
+import java.util.List;
+
 /**
  * Parámetros para configurar un DataLoader genérico.
  */
@@ -28,6 +31,11 @@ public class DataLoaderConfig {
     // HTTP
     private String httpUrl;      // URL de la cual descargar datos
     private boolean httpIsJson;  // true si la URL devuelve JSON, false si CSV
+    
+    // ** Synthetic **
+    private int syntheticN;
+    private double syntheticRInt;
+    private double syntheticRExt;
 
     // —— Getters & Setters ——
 
@@ -70,4 +78,13 @@ public class DataLoaderConfig {
     public void    setHttpUrl(String url)   { this.httpUrl = url; }
     public boolean isHttpIsJson()           { return httpIsJson; }
     public void    setHttpIsJson(boolean j) { this.httpIsJson = j; }
+    
+    // Synthetic
+    public int getSyntheticN() { return syntheticN; }
+    public void setSyntheticN(int syntheticN) { this.syntheticN = syntheticN; }
+    public double getSyntheticRInt() { return syntheticRInt; }
+    public void setSyntheticRInt(double syntheticRInt) { this.syntheticRInt = syntheticRInt; }
+    public double getSyntheticRExt() { return syntheticRExt; }
+    public void setSyntheticRExt(double syntheticRExt) { this.syntheticRExt = syntheticRExt; }
+
 }

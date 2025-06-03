@@ -8,10 +8,14 @@ import com.merlab.signals.data.DataSet;
 import com.merlab.signals.core.Signal;
 import com.merlab.signals.nn.manager.NeuralNetworkManager;
 import com.merlab.signals.nn.model.RegressionModel;
+import com.merlab.signals.nn.model.SimpleRegressionModel;
 import com.merlab.signals.nn.processor.LinearProcessor;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
-import com.merlab.signals.nn.trainer.LinearRegressionTrainer4;
+import com.merlab.signals.nn.processor.SimpleLinearProcessor;
+import com.merlab.signals.nn.trainer.LinearRegressionTrainer;
 import com.merlab.signals.nn.trainer.RegressionTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer4;
+import com.merlab.signals.nn.trainer.simple.SimpleRegressionTrainer;
 import com.merlab.signals.persistence.DatabaseManager;
 import com.merlab.signals.core.SignalStack;
 
@@ -39,14 +43,14 @@ public class RealDataHTTPFactoryExample {
         var targets = data.getTargets();
 
         // 3. Entrenar regresión lineal
-        RegressionTrainer trainer = new LinearRegressionTrainer4();
-        RegressionModel model = trainer.train(
+        SimpleRegressionTrainer trainer = new SimpleLinearRegressionTrainer4();
+        SimpleRegressionModel model = trainer.train(
             inputs, targets, Paths.get("model_http_json.txt")
         );
 
         // 4. Preparar el procesador lineal y el manager
         NeuralNetworkProcessor proc =
-            new LinearProcessor(model.getWeights(), model.getBias());
+            new SimpleLinearProcessor(model.getWeights(), model.getBias());
         SignalStack stack = new SignalStack();
         DatabaseManager db = new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root");
         NeuralNetworkManager nnManager = new NeuralNetworkManager(stack, proc, db);

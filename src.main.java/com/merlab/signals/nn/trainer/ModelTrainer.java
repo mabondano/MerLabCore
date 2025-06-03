@@ -1,16 +1,27 @@
-
 package com.merlab.signals.nn.trainer;
 
-import com.merlab.signals.core.Signal;
-import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
+import com.merlab.signals.data.DataSet;
 
-import java.nio.file.Path;
-import java.util.List;
 
 /**
- * Define el contrato para entrenar un modelo y obtener un NeuralNetworkProcessor
- * que pueda ejecutarse luego en producción.
+ * Contrato genérico para entrenar cualquier procesador de señales.
+ *
+ * @param <P> Tipo de procesador que entrena (p.ej. MultiLayerPerceptronProcessor,
+ *            LogisticRegressionProcessor, KNearestProcessor, etc.)
  */
+public interface ModelTrainer<P> {
+	    /**
+	     * Entrena el procesador dado sobre un DataSet.
+	     *
+	     * @param model         instancia no entrenada (o entrenada parcialmente) del procesador
+	     * @param data          conjunto de datos de entrenamiento
+	     * @param epochs        número de epochs
+	     * @param learningRate  tasa de aprendizaje (si aplica; algunos entrenadores la ignorarán)
+	     * @return              el mismo procesador, ya entrenado
+	     */
+	    P train(P model, DataSet data, int epochs, double learningRate);
+}
+/*
 public interface ModelTrainer {
 
     /**
@@ -20,10 +31,11 @@ public interface ModelTrainer {
      * @param targets         lista de señales objetivo (por ejemplo, una sola dimensión)
      * @param modelOutputPath ruta donde guardar los pesos/coeficientes del modelo
      * @return un NeuralNetworkProcessor para inferencia
-     */
+     *
     NeuralNetworkProcessor train(
         List<Signal> inputs,
         List<Signal> targets,
         Path modelOutputPath
     );
 }
+*/

@@ -4,8 +4,9 @@ import com.merlab.signals.core.Signal;
 import com.merlab.signals.features.FeatureExtractor;
 import com.merlab.signals.nn.manager.NeuralNetworkManager;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
-import com.merlab.signals.nn.trainer.LinearRegressionTrainer;
 import com.merlab.signals.nn.trainer.ModelTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleModelTrainer;
 import com.merlab.signals.core.SignalStack;
 import com.merlab.signals.persistence.DatabaseManager;
 
@@ -39,7 +40,7 @@ public class BasicNNExample {
         }
 
         // 3. Entrenar modelo (regresión lineal → LinearProcessor)
-        ModelTrainer trainer = new LinearRegressionTrainer();
+        SimpleModelTrainer trainer = new SimpleLinearRegressionTrainer();
         Path modelPath = Paths.get("model.txt");
         NeuralNetworkProcessor processor = trainer.train(featureVectors, targets, modelPath);
 

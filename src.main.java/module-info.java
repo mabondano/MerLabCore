@@ -19,6 +19,10 @@ module MerLabSignalStudio {
     requires org.json;
     requires java.net.http;
     requires java.desktop;         // <— para AWT/Swing
+    requires javafx.controls;
+    requires javafx.web;
+    requires javafx.graphics;      // a veces necesario
+    opens com.merlab.signals.plot to javafx.graphics;
     // Si tus tests están bajo com.merlab.signals.test, ábrelo para reflexión:
     opens com.merlab.signals.test to org.junit.jupiter.api;
     //exports com.merlab.signals;	

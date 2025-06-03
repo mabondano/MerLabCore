@@ -1,7 +1,8 @@
-package com.merlab.signals.nn.trainer;
+package com.merlab.signals.nn.trainer.simple;
 
 import com.merlab.signals.core.Signal;
 import com.merlab.signals.nn.processor.SimplePerceptronProcessor;
+
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
 import com.merlab.signals.nn.processor.ActivationFunction;
@@ -19,7 +20,7 @@ import java.util.List;
  * Entrenador basado en regresión lineal múltiple.
  * Calcula coeficientes y crea un SimplePerceptronProcessor con ellos.
  */
-public class LinearRegressionTrainer3 implements ModelTrainer {
+public class SimpleLinearRegressionTrainer2 implements SimpleModelTrainer {
 
     @Override
     public NeuralNetworkProcessor train(
@@ -55,10 +56,20 @@ public class LinearRegressionTrainer3 implements ModelTrainer {
             throw new RuntimeException("Error guardando modelo", e);
         }
 
-        // Devolvemos un perceptrón configurado con IDENTITY
-        ConfigPerceptronProcessor proc =
-            new ConfigPerceptronProcessor(weights, intercept, ActivationFunctions.IDENTITY);
-        return proc;
+        // Devolvemos la implementación que queramos
+        // (a) Devolvemos un perceptrón simple que use estos coeficientes
+        //return new SimplePerceptronProcessor(weights, intercept);
+        
+        // (b) después de calcular weights y intercept:
+        //ActivationFunction act = ActivationFunctions.SIGMOID;   // o RELU, TANH, IDENTITY
+        //return new ConfigPerceptronProcessor(weights, intercept, act);
+        
+        // (c) Aquí eliges la función de activación por defecto:
+        return new ConfigPerceptronProcessor(
+            weights,
+            intercept,
+            ActivationFunctions.SIGMOID  // o RELU, IDENTITY…
+        );
         
     }
 }

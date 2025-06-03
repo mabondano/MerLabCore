@@ -7,8 +7,9 @@ import com.merlab.signals.nn.processor.ActivationFunctions;
 import com.merlab.signals.nn.processor.ConfigPerceptronProcessor;
 import com.merlab.signals.nn.manager.NeuralNetworkManager;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
-import com.merlab.signals.nn.trainer.LinearRegressionTrainer3;
 import com.merlab.signals.nn.trainer.ModelTrainer;
+import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer3;
+import com.merlab.signals.nn.trainer.simple.SimpleModelTrainer;
 import com.merlab.signals.core.SignalStack;
 import com.merlab.signals.persistence.DatabaseManager;
 
@@ -43,7 +44,7 @@ public class BasicNNExample3 {
         }
 
         // 3. Entrenar con trainer3 (devuelve perceptrón Identity)
-        ModelTrainer trainer = new LinearRegressionTrainer3();
+        SimpleModelTrainer trainer = new SimpleLinearRegressionTrainer3();
         Path modelPath = Paths.get("model3.txt");
         NeuralNetworkProcessor processor = trainer.train(feats, targets, modelPath);
         System.out.println("Processor inicial: " + processor.getClass().getSimpleName());

@@ -9,7 +9,7 @@ import com.merlab.signals.core.Signal;
 import com.merlab.signals.core.SignalProvider;
 
 /**
- * Carga una señal completa desde la tabla 'signals' en la base de datos.
+ * Carga una señal completa desde la tabla 'signals' en la base de datos. Deprecated
  */
 public class DatabaseLoader implements SignalProvider {
     private final String url;
