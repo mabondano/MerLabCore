@@ -71,6 +71,74 @@ MerLabSignalStudio/
 ```
 ---
 
+## 📦 Arquitectura General de Clases (New)
+
+```plaintext
+MerLabSignalStudio
+│
+├── core
+│   ├── Signal
+│   ├── SignalProvider
+│   ├── SignalGenerator / CustomSignalGenerator / DistributionGenerator
+│   ├── SignalProcessor
+│   ├── SignalStack
+│   ├── SignalManager
+│   └── SignalPlotter
+│
+├── data
+│   ├── DataSet
+│   ├── DataSetBuilder
+│   ├── DataLoader (interface)
+│   │     ├── CSVDataLoader
+│   │     ├── JSONDataLoader
+│   │     ├── DatabaseLoader
+│   │     └── HTTPDataLoader
+│   ├── DataLoaderConfig
+│   └── DataLoaderFactory
+│
+├── nn
+│   ├── processor
+│   │   ├── NeuralNetworkProcessor (interface)
+│   │   ├── DefaultNeuralNetworkProcessor
+│   │   ├── SimplePerceptronProcessor
+│   │   ├── MultiLayerPerceptronProcessor
+│   │   ├── Layer
+│   │   ├── ActivationFunction / ActivationFunctions
+│   │   ├── LogisticRegressionProcessor
+│   │   ├── SimpleLogisticRegressionProcessor
+│   │   └── KNearestProcessor2
+│   │
+│   └── trainer
+│       ├── Trainer2 (interface)
+│       ├── BackpropMLPTrainer
+│       ├── BackpropLogisticTrainer2
+│       ├── KNearestTrainer2
+│       └── TrainerFactory2
+│
+├── ml
+│   ├── KMeansProcessor2
+│   ├── KMediansProcessor2
+│   ├── HierarchicalClusteringProcessor2
+│   ├── SOMProcessor2
+│   └── SVMProcessor2
+│
+├── persistence
+│   ├── DatabaseManager
+│   └── DataSetPersistenceExample
+│
+├── plot
+│   ├── SignalPlotter
+│   └── PlotlyBrowserViewer
+│
+├── examples (com.merlab.signals.example / com.merlab.nn.examples)
+│   └── ... [Múltiples ejemplos de entrenamiento y visualización]
+│
+└── llm (próximamente)
+    └── LlamaCppLoader, LLMExampleDemo3, etc.
+
+```
+---
+
 ## 3. Package & Class Descriptions
 
 com.merlab.signals
@@ -1024,4 +1092,106 @@ A "Test Signal" plot B + db save
 
 **Note:** 
 
+---
 
+## 🧠 Neural Network (NN) and LLM Section
+
+### Supported Processors and Algorithms
+
+- **Simple Perceptron:**  
+  - `SimplePerceptronProcessor`
+- **Multilayer Perceptron (MLP):**  
+  - `MultiLayerPerceptronProcessor` (arbitrary depth, any number of layers)
+- **Supported Activation Functions:**  
+  - SIGMOID, RELU, TANH, IDENTITY, LEAKY_RELU, ELU, SOFTMAX, SWISH, GELU, SELU, etc.
+- **Logistic Regression:**  
+  - `LogisticRegressionProcessor`, `SimpleLogisticRegressionProcessor`
+- **k-Nearest Neighbors (k-NN):**  
+  - `KNearestProcessor2` (supports EUCLIDEAN, MANHATTAN, MINKOWSKI, CHEBYSHEV, COSINE, JACCARD, HAMMING, etc.)
+- **Clustering:**  
+  - `KMeansProcessor2`, `KMediansProcessor2`, `HierarchicalClusteringProcessor2` (coming soon)
+- **Self-Organizing Maps (SOM):**  
+  - `SOMProcessor2`
+- **Support Vector Machines (SVM):**  
+  - `SVMProcessor2` (Linear, Polynomial, and RBF kernel support)
+- **LLM Loader (experimental):**
+  - `LlamaCppLoader`, `LLMExampleDemo3` (load and infer with Llama.cpp models via JNI)
+
+---
+
+### Trainers
+
+- **`BackpropMLPTrainer`** (classical backpropagation for MLP)
+- **`BackpropLogisticTrainer2`** (logistic regression)
+- **`KNearestTrainer2`** (stores dataset and k parameter)
+- **`TrainerFactory2`** (factory for trainers per algorithm)
+- **(Coming soon) Trainers for SVM, SOM, and hierarchical clustering**
+
+---
+
+### Improvements and Implemented Features
+
+1. **Full modularity:**  
+   Processors, trainers, and data loaders are fully interchangeable.
+2. **Extensible architecture:**  
+   Easy to add new algorithms and visualizers.
+3. **Advanced visualization:**  
+   - **Plotly**: interactive 2D/3D charts in browser (decision boundaries, clusters, etc.)
+   - **XChart**: fast time-series plots.
+   - Support for opening generated HTML from Java.
+4. **Persistence layer:**  
+   - Save/load signals and datasets to/from CSV, JSON, relational databases (MariaDB, PostgreSQL, etc.).
+   - HDF5 support (coming soon via jhdf).
+   - Example integration with databases via `DatabaseManager`.
+5. **Flexible DataLoader:**  
+   - Load datasets from **CSV**, **JSON**, **HTTP**, **database**, and (soon) **HDF5**.
+   - Simple configuration and easy extension for new formats.
+6. **RPN Pipeline and Stack:**  
+   - Signal stack (`SignalStack`) for RPN operations and chained processing.
+   - Pipeline examples for normalization, feature extraction, etc.
+7. **Reporting and metrics:**  
+   - `ModelReporter` and `ModelInfo` summarize training, architecture, hyperparameters, and metrics (MSE, R², accuracy, etc.).
+   - Export to plain text, HTML, or Markdown.
+8. **Integration tests:**  
+   - KMeansIntegrationTest and others ensure stability after architectural changes.
+9. **LLM Integration:**  
+   - Load and use Llama.cpp models via JNI.  
+   - Example: `LLMExampleDemo3`.
+
+---
+
+## 🚀 Available Examples
+
+- **MLP XOR / regression sin(x) / house prices**
+- **Classification of synthetic circles (MLP, logistic regression, SVM)**
+- **Clustering with KMeans, KMedians, SOM**
+- **k-NN with customizable metrics**
+- **SVM linear, polynomial, RBF**
+- **Real data loading from CSV/JSON/DB**
+- **Plotly and XChart visualizations**
+- **Load and infer with Llama.cpp (experimental)**
+
+---
+
+## 📈 Visualization & Persistence Features
+
+- Interactive 2D/3D plots: decision boundaries, clustering, training evolution.
+- Export results and reports to HTML/Markdown.
+- Persistence to CSV, JSON, relational DB, HDF5 (coming soon).
+- Data loading via HTTP or locally.
+- Support for RPN pipelines and chained operations.
+
+---
+
+## 💡 Roadmap
+
+- [ ] Trainers for SVM, SOM, hierarchical clustering
+- [ ] Native HDF5 integration
+- [ ] Advanced LLM result visualization
+- [ ] Improvements to REST API and web-based visualization
+
+---
+
+**Collaborate, open issues, or create your own examples!**
+
+---
