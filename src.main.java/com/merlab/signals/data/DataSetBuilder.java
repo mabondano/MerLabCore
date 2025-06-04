@@ -43,6 +43,11 @@ public class DataSetBuilder {
         return fromArray(data, data[0].length - 1);
     }
     
+    // Dentro de DataSetBuilder
+    public static DataSet fromSignals(List<Signal> inputs, List<Signal> targets) {
+        return new DataSet(inputs, targets);
+    }
+
 
     /**
      * Construye un DataSet a partir de un array de filas [x, y, label]

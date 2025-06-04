@@ -1,6 +1,7 @@
 package com.merlab.signals.nn.trainer;
 
 import com.merlab.signals.ml.KNearestTrainer2;
+import com.merlab.signals.ml.SVMTrainer2;
 import com.merlab.signals.nn.processor.LogisticRegressionProcessor;
 
 /**
@@ -12,7 +13,8 @@ public class TrainerFactory2 {
     public enum Algorithm {
         MLP_BACKPROP,
         LOGISTIC_REGRESSION,
-        KNN
+        KNN,
+        SVM_LINEAR
         // …otros algoritmos…
     }
 
@@ -28,6 +30,8 @@ public class TrainerFactory2 {
                 // Este casteo funciona en ejecución **siempre que**
                 // BackpropLogisticTrainer implemente Trainer<LogisticRegressionProcessor>.
                 return (Trainer2<M>) new BackpropLogisticTrainer2();
+            case SVM_LINEAR:
+                return (Trainer2<M>) new SVMTrainer2();
             // …otros casos…
             default:
                 throw new IllegalArgumentException("Algoritmo no soportado: " + algo);
