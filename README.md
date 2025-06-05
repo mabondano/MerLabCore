@@ -28,6 +28,66 @@ MerLabSignalStudio is ideal for signal processing engineers, data scientists and
 
 ---
 
+### Neural Network Integration
+
+MerLabSignalStudio offers a modular and extensible neural network (NN) stack that covers the most important paradigms in classical and modern machine learning:
+
+- **Processors**  
+  Unified interface (`NeuralNetworkProcessor`) for all NN models—perceptron, multi-layer perceptron (MLP), logistic regression, k-nearest neighbors (KNN), support vector machines (SVM), clustering (KMeans, KMedians), and Self-Organizing Maps (SOM). All processors implement a `predict(Signal)` method, supporting plug-and-play in the pipeline.
+
+- **Trainers**  
+  Generic `Trainer2` interface and a flexible `TrainerFactory2` pattern let you instantiate and train any supported model with a consistent API. Built-in trainers include backpropagation (MLP), logistic regression, k-NN (lazy), and SVM (primal/SGD).
+
+- **DataSet and Data Loading**  
+  Seamless construction of datasets from CSV, JSON, database (JDBC), HTTP, or programmatically-generated signals.
+
+- **Model Reporting**  
+  All NN models support reporting via `ModelInfo` and `ModelReporter`, which summarize structure (layers, weights), training progress (epochs, learning rate), and key metrics (accuracy, MSE, R²).
+
+- **Visualization**  
+  Decision boundaries, cluster assignments, and training curves can be visualized using Plotly (interactive HTML) or XChart (desktop).
+
+- **Example gallery**  
+  Out-of-the-box examples: MLP regression/classification, logistic regression, KNN, clustering, SVM with margin visualization, SOM, and more. All follow the same pipeline for reproducibility and benchmarking.
+
+---
+
+### LLM (Large Language Model) Integration
+
+MerLabSignalStudio natively supports loading, inference, and orchestration of local Large Language Models (LLMs):
+
+- **Model Loading**  
+  Integrates with GGUF/llama.cpp backends via `MerLLMLoader` and (optionally) `MerLLMLoaderJNI`, allowing you to load quantized LLMs (e.g., Llama 2/3, TinyLlama) locally—no internet required.
+
+- **LLMManager and History**  
+  `LLMManager` provides inference methods, prompt history management, and reproducible chat-like sessions with persistent conversation logs.
+
+- **Pipeline Integration**  
+  LLMs can be used standalone or as part of a signal-data pipeline for tasks like automated code generation, documentation, or natural language analysis of signal features.
+
+- **Model Reporting**  
+  All LLM runs are tracked via `ModelInfo` and `ModelReporter` for model type, token counts, inference time, and prompt/response stats.
+
+- **Extensible by design**  
+  Plug in new LLM backends or custom wrappers by implementing the same loader/manager interfaces.
+
+- **Examples provided**  
+  Scripts for loading a model, running inference with a prompt, saving prompt history, and integrating LLM outputs into analytic pipelines.
+
+---
+
+With its unified architecture for neural networks and LLMs, MerLabSignalStudio is ready for hybrid analytics, classical ML, and state-of-the-art language model applications.
+
+> **Upcoming**:  
+> - **Autoencoders, CNNs, RNNs, Transformers, and generative models** (GAN, VAE, custom GPT) are under active development and will be included in future releases.  
+> - **Decision Tree algorithms**: The most widely used, including CART, ID3, C4.5, and Random Forests, are planned for supervised classification and regression tasks.  
+> - **Bayesian algorithms**: Naive Bayes and other probabilistic learning methods will also be supported for robust classification and inference.
+>
+> These modules will further expand the framework for unsupervised learning, dimensionality reduction, image/time-series analysis, advanced sequence modeling, and probabilistic modeling.
+
+
+---
+
 ## 2. Folder Structure
 
 A typical Maven-style layout:
@@ -237,6 +297,7 @@ mgr.showStack();
 ```
 
 - **Ad-hoc RPN Operations**
+
 ```java
 java
 
@@ -256,6 +317,7 @@ mgr.saveLastSignal();
   * Maven or Gradle
 
   * Dependencies in pom.xml: JUnit 5, Apache Commons-Math3, XChart
+  
  ```xml
 xml
 
@@ -281,18 +343,21 @@ xml
  ```
 
 2. Build & Compile
+
 ```
 bash
 
 mvn clean compile
 ```
 3. Run Tests
+
 ```
 bash
 
 mvn test
 ```
 4. Package JAR
+
 ```
 bash
 
@@ -430,6 +495,7 @@ module-info.java
 ---
 
 ## 8. Project Flow Diagram (Classes + Pipeline) 
+
 ```plaintext
 plaintext
 
@@ -507,6 +573,7 @@ plaintext
 ---
 
 ## 9. Generic Pipeline Flow Diagram
+
 ```plaintext
 plaintext
 
@@ -860,6 +927,7 @@ plaintext
 MerLabSignalStudio includes a generic, extensible Reverse Polish Notation (RPN) engine that allows you to build complex signal processing pipelines by chaining operations in postfix style. This design supports unary, binary, and n-ary operations and can be extended dynamically.
 
 RPN Flow Diagram (Plaintext)
+
 ```plaintext
 
    +------------------+
@@ -908,6 +976,7 @@ Tokens:      "A 2 dec norm B +"
 Pipeline:    [Push A] → [Push 2] → [Decimate] → [Normalize] → [Push B] → [Add]
 Example RPN Usage (Java)
 src/main/java/com/merlab/signals/examples/ExampleRPNUsage.java
+
 ```
 ---
 
@@ -1055,10 +1124,12 @@ Plot: Displays the signal visually (stub for now, can use JavaFX, Plotly, etc.).
 Save: Saves the signal to the database (here, table/format is a placeholder—can be defined later).
 
 RPN Expression Example Including Plot and Save
+
 ```css
 
 A "Test Signal" plot B + db save
 ```
+
 This pipeline pushes signal A, plots it with the label, adds B, and saves the result to the database.
 
 ### Plot and Save in the RPN Pipeline
@@ -1308,6 +1379,7 @@ A "Test Signal" plot B + db save
                     +--------------------------+
 
 ```
+
 **Typical flow:**
 
 - The DataSet is built with synthetic or real data.
