@@ -1002,7 +1002,8 @@ Extending RPN	Register your own ops via engine.register("myop", new MyOp())
 MerLabSignalStudio includes development and workflow utilities like plot (for visualizing signals during pipeline development) and save (to persist results for later analysis).
 
 Flow Diagram with Plot & Save (Plaintext)
-```pgsql
+
+```plaintext
 
    +-----------+          +---------+           +-------------+
    |   Signal  |   --->   |  RPN    |   --->    |   Result    |
@@ -1016,6 +1017,7 @@ Flow Diagram with Plot & Save (Plaintext)
 ```
 
 Example: Plotting and Saving Signals with RPN
+
 ```java
 
 import com.merlab.signals.*;
@@ -1189,6 +1191,226 @@ A "Test Signal" plot B + db save
 - [ ] Native HDF5 integration
 - [ ] Advanced LLM result visualization
 - [ ] Improvements to REST API and web-based visualization
+
+---
+
+## Class Diagram: Neural Network Module – MerLabSignalStudio
+
+```plaintext
+
++------------------------------------------------------+
+|                DataSet                               |
+|------------------------------------------------------|
+| + List<Signal> inputs                                |
+| + List<Signal> targets                               |
++--------------------------+---------------------------+
+                           |
+                           v
++--------------------+     +--------------------------+     +-------------------+
+|   Signal           |     | DataSetBuilder           |     |  DataLoader       |
+|--------------------|     |--------------------------|     |-------------------|
+| + List<Double> values    | + fromSignals(...)       |     | + load()          |
++--------------------+     +--------------------------+     +-------------------+
+
+                           |
+                           v
++-------------------------+
+| NeuralNetworkProcessor  |<-----------------+
++-------------------------+                  |
+| + predict(Signal)       |                  |
++-------------------------+                  |
+        ^                                    |
+        |                                    |
++--------------------------+      +------------------------------+
+| SimplePerceptronProcessor|      | MultiLayerPerceptronProcessor|
++--------------------------+      +------------------------------+
+| + weights, bias          |      | + List<Layer> layers         |
+| + activation             |      | + forward(...)               |
++--------------------------+      +------------------------------+
+        ^                                   ^
+        |                                   |
+        +---------------+-------------------+
+                        |
+        +-----------------------------+
+        | LogisticRegressionProcessor |
+        +-----------------------------+
+        | + weights, bias             |
+        | + sigmoid                   |
+        +-----------------------------+
+                        |
+        +---------------------+
+        | KNearestProcessor2  |
+        +---------------------+
+        | + List<Signal> X    |
+        | + List<Double> y    |
+        +---------------------+
+                        |
+        +-----------------+
+        | SVMProcessor2   |
+        +-----------------+
+        | + weights, bias |
+        +-----------------+
+
+               |
+               v
++------------------------------+
+| Trainer2<M> (interface)      |
++------------------------------+
+| + train(M, DataSet, epochs,  |
+|          learningRate)       |
++------------------------------+
+        ^          ^       ^        ^
+        |          |       |        |
++-------------------+   +-------------------+
+| BackpropMLPTrainer|   |KNearestTrainer2   |
++-------------------+   +-------------------+
+|                   |   |                   |
++-------------------+   +-------------------+
+        ^
++------------------------+
+| BackpropLogisticTrainer|
++------------------------+
+        ^
++-----------------+
+| SVMTrainer2     |
++-----------------+
+             ^
+             |
++----------------------+
+| TrainerFactory2      |
++----------------------+
+| + create(Algorithm)  |
++----------------------+
+             |
+             v
++---------------------+           +--------------------+
+|  ModelInfo          |<----------|  ModelReporter     |
++---------------------+           +--------------------+
+| + String modelName  |           | + report(ModelInfo)|
+| + int epochs        |           +--------------------+
+| + double learningRate|
+| + Double accuracy   |
+| + List<LayerInfo>   |
+| ...                 |
++---------------------+
+
+                           ^
+                           |
+                    +--------------------------+
+                    |   Examples               |
+                    +--------------------------+
+                    | MLPClassifyExample       |
+                    | MLPRegressionExample     |
+                    | LogisticRegressionExample|
+                    | KNearestExample2         |
+                    | SVMTrainerExample        |
+                    | ...                      |
+                    +--------------------------+
+
+```
+**Typical flow:**
+
+- The DataSet is built with synthetic or real data.
+
+- A Processor is selected (MLP, Perceptron, Logistic, KNN, SVM, ...).
+
+- A specific Trainer2 trains the model with the DataSet.
+
+- A ModelInfo is constructed with results and metrics.
+
+- The results are reported with ModelReporter.
+
+- Visualization is performed separately with Plotly/XChart.
+
+---
+
+## Class Diagram: LLM Module – MerLabSignalStudio
+
+```plaintext
+
++-----------------------------------------------------+
+|                DataSet                              |
++-----------------------------------------------------+
+| + List<Signal> inputs                               |
+| + List<Signal> targets                              |
++-----------------------------------------------------+
+                        |
+                        v
++----------------------------------------------------+
+|             LLMManager                             |
++----------------------------------------------------+
+| + MerLLMLoader loader                              |
+| + loadModel(path)                                  |
+| + infer(prompt)                                    |
+| + getHistory()                                     |
+| + saveHistory(file)                                |
++----------------------------------------------------+
+          |                          |
+          v                          v
++--------------------------+    +-----------------------------+
+|     MerLLMLoader         |    |    LLMHistory               |
++--------------------------+    +-----------------------------+
+| + load(path)             |    | + List<LLMMessage> messages |
+| + infer(prompt)          |    | + addMessage(...)           |
+| + unload()               |    | + clear()                   |
+| + isLoaded()             |    +-----------------------------+
+| + setParameters(...)     |
++--------------------------+
+
+           |
+           v
++--------------------------+
+|   MerLLMLoaderJNI        |   (Optional: native interface)
++--------------------------+
+| + loadModelNative(path)  |
+| + inferNative(prompt)    |
+| + unloadNative()         |
++--------------------------+
+
+           |
+           v
++-----------------------+
+|   ModelInfo           |
++-----------------------+
+| + String modelName    |
+| + String llmType      |
+| + int    tokens       |
+| + double inferenceTime|
+| + ...                 |
++-----------------------+
+          |
+          v
++---------------------+
+|  ModelReporter      |
++---------------------+
+| + report(ModelInfo) |
++---------------------+
+
+          |
+          v
++------------------------+
+|  LLMExample            |
++------------------------+
+| (Examples for loading, |
+|  inference, reporting, |
+|  chat-like sessions)   |
++------------------------+
+
+```
+
+
+**Typical LLM workflow:**
+- The LLMManager orchestrates model loading, inference, and chat history management.
+
+- MerLLMLoader (or MerLLMLoaderJNI for native/cpp backend) loads and runs the model.
+
+- LLMHistory keeps track of chat sessions, prompts, and responses.
+
+- ModelInfo summarizes model details and performance.
+
+- ModelReporter prints or exports summaries.
+
+- Example classes (like LLMExample) demonstrate usage and integration with the pipeline.
 
 ---
 
