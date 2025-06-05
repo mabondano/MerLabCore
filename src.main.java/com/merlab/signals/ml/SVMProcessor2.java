@@ -6,8 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SVMProcessor2 implements NeuralNetworkProcessor {
-    private double[] weights;  // w vector
-    private double bias;       // b
+	
+    public enum KernelType { 
+    	LINEAR, RBF 
+    }
+    
+    private double[] weights;  	// w vector
+    private double bias = 0.0;  // b    
+    private KernelType kernel = KernelType.LINEAR;
+    
+    private double gamma = 1.0; // parámetro del RBF
+    
+    //Estructura para puntos soporte (opcional para visualización)
+    private List<double[]> supportVectors = new ArrayList<>();
+    private List<Double> alphas = new ArrayList<>();
+    private List<Double> supportLabels = new ArrayList<>();
+    
 
     public SVMProcessor2(int inputDim) {
         this.weights = new double[inputDim];
@@ -61,6 +75,71 @@ public class SVMProcessor2 implements NeuralNetworkProcessor {
     public double getBias() {
         return bias;
     }
+    
+    public void addSupportVector(double[] vec, double alpha, double label) {
+        supportVectors.add(vec);
+        alphas.add(alpha);
+        supportLabels.add(label);
+    }
+
+    public List<double[]> getSupportVectors() { 
+    	return supportVectors; 
+    }
+    
+    public List<Double> getAlphas() { 
+    	return alphas; 
+    }
+    
+    public List<Double> getSupportLabels() { 
+    	return supportLabels; 
+    }
+    
+    // Kernel Section
+
+    public void setKernel(KernelType type) { 
+    	this.kernel = type; 
+    }
+    
+    public void setGamma(double gamma) { 
+    	this.gamma = gamma; 
+    }
+
+    public double kernel(double[] x, double[] xPrime) {
+        if (kernel == KernelType.LINEAR) {
+            double sum = 0.0;
+            for (int i = 0; i < x.length; i++) sum += x[i] * xPrime[i];
+            return sum;
+        } else if (kernel == KernelType.RBF) {
+            double sum = 0.0;
+            for (int i = 0; i < x.length; i++) sum += Math.pow(x[i] - xPrime[i], 2);
+            return Math.exp(-gamma * sum);
+        }
+        return 0.0;
+    }
+    
+    public double predictKernel(double[] x) {
+        double sum = 0.0;
+        for (int i = 0; i < alphas.size(); i++) {
+            sum += alphas.get(i) * supportLabels.get(i) * kernel(supportVectors.get(i), x);
+        }
+        return sum; // sin bias
+    }
+    
+    public double predictKernelWithBias(double[] x) {
+        double sum = 0.0;
+        for (int i = 0; i < alphas.size(); i++) {
+            sum += alphas.get(i) * supportLabels.get(i) * kernel(supportVectors.get(i), x);
+        }
+        return sum + bias;
+    }
+    
+    public void clearSupportVectors() {
+        supportVectors.clear();
+        alphas.clear();
+        supportLabels.clear();
+    }
+
+
 
 
 }
