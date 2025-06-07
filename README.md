@@ -1489,3 +1489,10 @@ A "Test Signal" plot B + db save
 **Collaborate, open issues, or create your own examples!**
 
 ---
+
+## License
+
+This project is licensed under the Apache License, Version 2.0.  
+See the [LICENSE](LICENSE) file for details.
+
+---
