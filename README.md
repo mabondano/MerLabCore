@@ -1,4 +1,34 @@
-# MerLabSignalStudio
+# MerLabCore
+
+> **Science & Signal Engineering Toolkit — Powerful tools for signal, data, and machine learning pipelines**
+
+---
+
+MerLabCore is a modular, extensible library designed for scientific computing, real-time signal processing, data engineering, and advanced machine learning applications.  
+Built with flexibility and performance in mind, MerLabCore empowers researchers, engineers, and developers to design, analyze, and deploy robust pipelines for signals, time series, and data-driven workflows.
+
+---
+
+## ✨ **Key Features**
+
+- **Signal Processing:**  
+  Tools for filtering, transformation, real-time analysis, and visualization of biomedical, industrial, and scientific signals.
+
+- **Data Engineering:**  
+  Modular utilities for data ingestion, preprocessing, and pipeline orchestration.
+
+- **Machine Learning Integration:**  
+  Seamless integration with classic ML and modern neural network workflows.
+
+- **LLM (Large Language Models):**  
+  APIs and utilities for inference, fine-tuning, and integration of modern language models.
+
+- **Extensible Modular Design:**  
+  Organized modules: `signal`, `data`, `ml`, `llm`, `utils` for clean, scalable projects.
+
+---
+
+# MerLabSignalStudio (old name)
 MerLabSignalStudio is a Java framework for end-to-end signal processing and data analytics. It provides synthetic and statistical signal generators, DSP operations (add, filter, FFT), RPN-style pipelines, statistical and feature extraction, neural network inference hooks, JDBC persistence, and XChart visualization. Extensible and test-driven.
 
 
