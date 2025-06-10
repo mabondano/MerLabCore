@@ -28,6 +28,17 @@ Built with flexibility and performance in mind, MerLabCore empowers researchers,
 
 ---
 
+## 📦 **Package Structure**
+
+merlabcore/
+signal/ # Signal processing algorithms and utilities
+data/ # Data pipeline, ETL, and preprocessing
+ml/ # Machine learning models and tools
+llm/ # Language model integration
+utils/ # Shared utilities and helpers
+
+---
+
 # MerLabSignalStudio (old name)
 MerLabSignalStudio is a Java framework for end-to-end signal processing and data analytics. It provides synthetic and statistical signal generators, DSP operations (add, filter, FFT), RPN-style pipelines, statistical and feature extraction, neural network inference hooks, JDBC persistence, and XChart visualization. Extensible and test-driven.
 
