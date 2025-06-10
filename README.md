@@ -31,11 +31,11 @@ Built with flexibility and performance in mind, MerLabCore empowers researchers,
 ## 📦 **Package Structure**
 
 - **merlabcore/**  
-  signal/ # Signal processing algorithms and utilities
-  data/ # Data pipeline, ETL, and preprocessing
-  ml/ # Machine learning models and tools
-  llm/ # Language model integration
-  utils/ # Shared utilities and helpers
+  * signal/ # Signal processing algorithms and utilities
+  * data/ # Data pipeline, ETL, and preprocessing
+  * ml/ # Machine learning models and tools
+  * llm/ # Language model integration
+  * utils/ # Shared utilities and helpers
 
 ---
 
