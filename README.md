@@ -30,7 +30,7 @@ Built with flexibility and performance in mind, MerLabCore empowers researchers,
 
 ## 📦 **Package Structure**
 
-- **merlabcore/**
+- **merlabcore/**  
   signal/ # Signal processing algorithms and utilities
   data/ # Data pipeline, ETL, and preprocessing
   ml/ # Machine learning models and tools
