@@ -1,8 +1,8 @@
 package com.merlab.signals.test;
 
-import com.merlab.signals.DistributionGenerator;
-import com.merlab.signals.Signal;
 import org.junit.jupiter.api.Test;
+
+import com.merlab.signals.core.DistributionGenerator;
 
 import java.util.List;
 

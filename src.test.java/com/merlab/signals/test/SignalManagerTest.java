@@ -6,17 +6,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.merlab.signals.DatabaseManager;
-import com.merlab.signals.Signal;
-import com.merlab.signals.SignalManager;
-import com.merlab.signals.SignalManager.RPNOp;
-import com.merlab.signals.SignalProcessor;
-import com.merlab.signals.SignalProcessor.LengthMode;
-import com.merlab.signals.SignalStack;
+import com.merlab.signals.core.Signal;
+import com.merlab.signals.core.SignalManager;
+import com.merlab.signals.core.SignalProcessor;
+import com.merlab.signals.core.SignalStack;
+import com.merlab.signals.core.SignalManager.RPNOp;
+import com.merlab.signals.core.SignalProcessor.LengthMode;
+import com.merlab.signals.persistence.DatabaseManager;
 
 public class SignalManagerTest {
 	
@@ -775,7 +778,77 @@ public class SignalManagerTest {
 
     
 	// 10. 
+    private SignalManager mgr;
+
+    @BeforeEach
+    void setup() {
+        // Puedes pasar nulls o mocks para provider y db si no los usas aquí
+        mgr = new SignalManager(
+            null,
+            new SignalStack(),
+            null,
+            false, false, false
+        );
+    }
+
+    @Test
+    void testOperateWithRPNAdd() {
+        // Preparo dos señales
+        Signal A = new Signal(List.of(1.0, 2.0, 3.0));
+        Signal B = new Signal(List.of(4.0, 5.0, 6.0));
+
+        // variables “A” y “B” resuelven a las señales
+        Map<String,Signal> vars = Map.of("A", A, "B", B);
+
+        // postfix: A B + → sum element‐wise
+        Signal result = mgr.operateWithRPN(
+            List.of("A","B","+"),
+            vars
+        );
+
+        assertEquals(List.of(5.0,7.0,9.0), result.getValues());
+    }
     
+    @Test
+    void testOperateWithRPNUnderflow() {
+        // Solo un elemento en el stack, pero "+" necesita dos
+        SignalManager mgr = new SignalManager(null, new SignalStack(), null, false, false, false);
+        mgr.addSignal(new Signal(List.of(1.0, 2.0, 3.0)));
+        assertThrows(IllegalStateException.class, () -> mgr.operateRPN(RPNOp.ADD, LengthMode.REQUIRE_EQUAL));
+    }
+
+    /*
+    @Test
+    void testOperateWithRPNUnderflow_() {
+        // Stack vacío y sólo “+” → error de argumentos insuficientes
+        assertThrows(IllegalStateException.class, () ->
+            mgr.operateWithRPN(List.of("+"), Collections.emptyMap())
+        );
+    }
+    */
+
+    @Test
+    void testOperateWithRPNUnknownToken() {
+        // Token no registrado debe lanzar IllegalArgumentException
+        assertThrows(IllegalArgumentException.class, () ->
+            mgr.operateWithRPN(List.of("foo"), Collections.emptyMap())
+        );
+    }
+
+    @Test
+    void testOperateWithRPNChainMixed() {
+        // ((A + B) * 2) for A=[1,2], B=[3,4]
+        Signal A = new Signal(List.of(1.0,2.0));
+        Signal B = new Signal(List.of(3.0,4.0));
+        Map<String,Signal> vars = Map.of("A",A,"B",B);
+
+        Signal result = mgr.operateWithRPN(
+          List.of("A","B","+","2","*"),
+          vars
+        );
+
+        assertEquals(List.of(8.0,12.0), result.getValues());
+    }
   
 
 }

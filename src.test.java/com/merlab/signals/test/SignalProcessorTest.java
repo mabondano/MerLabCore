@@ -10,8 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import com.merlab.signals.Signal;
-import com.merlab.signals.SignalProcessor;
+
+import com.merlab.signals.core.Signal;
+import com.merlab.signals.core.SignalProcessor;
 
 public class SignalProcessorTest {
 	
@@ -329,7 +330,7 @@ public class SignalProcessorTest {
 	    void testConvolveReversedStride1() {
 	        List<Double> sig    = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
 	        List<Double> kernel = Arrays.asList(1.0, 0.5);
-	        List<Double> out    = SignalProcessor.convolveReversed(sig, kernel, 1);
+	        List<Double> out    = SignalProcessor.convolveReversedWithStride(sig, kernel, 1);
 	        double[] expected   = {2.5, 4.0, 5.5, 7.0};  // <--- corregido
 	        double[] actual     = out.stream().mapToDouble(d -> d).toArray();
 	        assertArrayEquals(expected, actual, 1e-9,
@@ -340,7 +341,7 @@ public class SignalProcessorTest {
 	    void testConvolveReversedStride2() {
 	        List<Double> sig    = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
 	        List<Double> kernel = Arrays.asList(1.0, 0.5);
-	        List<Double> out    = SignalProcessor.convolveReversed(sig, kernel, 2);
+	        List<Double> out    = SignalProcessor.convolveReversedWithStride(sig, kernel, 2);
 	        double[] expected   = {2.5, 5.5};            // <--- corregido
 	        double[] actual     = out.stream().mapToDouble(d -> d).toArray();
 	        assertArrayEquals(expected, actual, 1e-9,
@@ -352,7 +353,7 @@ public class SignalProcessorTest {
 	        List<Double> sig    = Arrays.asList(1.0, 2.0, 3.0);
 	        List<Double> kernel = Arrays.asList(1.0);
 	        assertThrows(IllegalArgumentException.class, () -> 
-	            SignalProcessor.convolveReversed(sig, kernel, 0),
+	            SignalProcessor.convolveReversedWithStride(sig, kernel, 0),
 	            "Stride <1 debe lanzar IllegalArgumentException"
 	        );
 	    }
@@ -362,7 +363,7 @@ public class SignalProcessorTest {
 	        // señal más corta que kernel
 	        List<Double> sig    = Arrays.asList(1.0, 2.0);
 	        List<Double> kernel = Arrays.asList(1.0, 0.5, 0.25);
-	        List<Double> out    = SignalProcessor.convolveReversed(sig, kernel, 1);
+	        List<Double> out    = SignalProcessor.convolveReversedWithStride(sig, kernel, 1);
 	        assertEquals(Collections.emptyList(), out, 
 	            "Señal corta < kernel debe devolver lista vacía");
 	    }	    

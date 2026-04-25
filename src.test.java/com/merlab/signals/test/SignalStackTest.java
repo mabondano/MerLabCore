@@ -1,8 +1,9 @@
 package com.merlab.signals.test;
 
-import com.merlab.signals.Signal;
-import com.merlab.signals.SignalStack;
 import org.junit.jupiter.api.Test;
+
+import com.merlab.signals.core.Signal;
+import com.merlab.signals.core.SignalStack;
 
 import java.util.Arrays;
 import java.util.List;

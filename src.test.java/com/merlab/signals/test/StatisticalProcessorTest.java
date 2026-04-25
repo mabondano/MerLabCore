@@ -1,8 +1,10 @@
 package com.merlab.signals.test;
 
-import com.merlab.signals.Signal;
-import com.merlab.signals.StatisticalProcessor;
 import org.junit.jupiter.api.Test;
+
+import com.merlab.signals.core.Signal;
+import com.merlab.signals.core.StatisticalProcessor;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 

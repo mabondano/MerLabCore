@@ -1,8 +1,10 @@
 package com.merlab.signals.test;
 
-import com.merlab.signals.Signal;
-import com.merlab.signals.SignalGenerator;
 import org.junit.jupiter.api.Test;
+
+import com.merlab.signals.core.Signal;
+import com.merlab.signals.core.SignalGenerator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;

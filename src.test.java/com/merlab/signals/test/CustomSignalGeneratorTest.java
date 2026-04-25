@@ -8,11 +8,8 @@ import java.util.stream.DoubleStream;
 
 import org.junit.jupiter.api.Test;
 
-import com.merlab.signals.CustomSignalGenerator;
-import com.merlab.signals.Signal;
+import com.merlab.signals.core.CustomSignalGenerator;
 
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomSignalGeneratorTest {
 

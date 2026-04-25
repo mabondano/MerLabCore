@@ -1,0 +1,5 @@
+bin/ 
+.metadata/ 
+hs_err_pid*.log 
+out/ 
+*.txt 
