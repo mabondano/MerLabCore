@@ -46,7 +46,12 @@ public class BasicNNExample {
 
         // 4. Preparar el manager con placeholder de BD y stack
         SignalStack stack = new SignalStack();
-        DatabaseManager dbManager = new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root");   // ajusta según tu implementación
+        //DatabaseManager dbManager = new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root");   // ajusta según tu implementación
+        DatabaseManager dbManager = new DatabaseManager(
+        	    "jdbc:mariadb://localhost:3306/test?useSSL=false&authType=default",
+        	    "root",
+        	    "root"
+        	);
         NeuralNetworkManager nnManager = new NeuralNetworkManager(stack, processor, dbManager);
 
         // 5. Inferencia sobre un nuevo valor x = 10

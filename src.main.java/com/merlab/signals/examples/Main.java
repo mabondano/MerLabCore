@@ -15,6 +15,7 @@ import com.merlab.signals.core.DistributionGenerator.DistType;
 import com.merlab.signals.core.SignalGenerator.Type;
 import com.merlab.signals.core.SignalManager.RPNOp;
 import com.merlab.signals.core.SignalProcessor.LengthMode;
+import com.merlab.signals.persistence.DatabaseConfig;
 import com.merlab.signals.persistence.DatabaseManager;
 
 public class Main {
@@ -22,9 +23,10 @@ public class Main {
     	
     	//*****************************************************************
         // Parámetros JDBC (aunque aquí usemos generator)
-        String url      = "jdbc:mariadb://localhost:3306/test";
-        String user     = "root";
-        String password = "root";
+        DatabaseConfig dbConfig = DatabaseConfig.loadLocal();
+        String url      = dbConfig.getUrl();
+        String user     = dbConfig.getUser();
+        String password = dbConfig.getPassword();
 
         // 1. Fuente de señal
         SignalProvider provider = new SignalGenerator(
@@ -34,7 +36,7 @@ public class Main {
 
         // 2. Componentes del pipeline
         SignalStack     stack   = new SignalStack();
-        DatabaseManager db      = new DatabaseManager(url, user, password);
+        DatabaseManager db      = dbConfig.createDatabaseManager();
 
         // 3. Flags de etapa
         boolean doStats    = true;
@@ -213,7 +215,7 @@ public class Main {
         SignalManager mgr = new SignalManager(
                 new SignalGenerator(), 
                 new SignalStack(), 
-                new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root") ,
+                dbConfig.createDatabaseManager(),
                 /*doStats*/ false,
                 /*doFeatures*/ false,
                 /*doNN*/ false
@@ -236,7 +238,7 @@ public class Main {
         SignalManager mgr2 = new SignalManager(
                 new SignalGenerator(), 
                 new SignalStack(), 
-                new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root") ,
+                dbConfig.createDatabaseManager(),
                 /*doStats*/ false,
                 /*doFeatures*/ false,
                 /*doNN*/ false
