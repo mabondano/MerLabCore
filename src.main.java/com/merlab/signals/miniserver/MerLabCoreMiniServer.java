@@ -33,6 +33,7 @@ public class MerLabCoreMiniServer {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/command", MerLabCoreMiniServer::handleCommand);
         server.createContext("/health",  MerLabCoreMiniServer::handleHealth);
+        server.createContext("/examples", MerLabCoreMiniServer::handleExamples);
         server.start();
 
         System.out.println("╔══════════════════════════════════════════════╗");
@@ -117,6 +118,38 @@ Tip: click any example in the INDEX panel to run it automatically.
         }
     }
 
+    private static void handleExamples(HttpExchange exchange) throws IOException {
+        addCors(exchange);
+
+        if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+
+        StringBuilder json = new StringBuilder();
+        json.append("{ \"examples\": [");
+
+        boolean first = true;
+        for (var entry : ExampleRegistry.all().entrySet()) {
+            if (!first) {
+                json.append(", ");
+            }
+            first = false;
+
+            ExampleRegistry.ExampleEntry example = entry.getValue();
+            json.append("{ \"key\": ")
+                .append(toJsonString(entry.getKey()))
+                .append(", \"category\": ")
+                .append(toJsonString(example.category()))
+                .append(", \"description\": ")
+                .append(toJsonString(example.description()))
+                .append(" }");
+        }
+
+        json.append("] }");
+        sendJsonResponse(exchange, json.toString());
+    }
+
     // ── helpers ─────────────────────────────────────────────────────────────
 
     private static void sendJson(HttpExchange exchange, String output, String chart) throws IOException {
@@ -127,6 +160,10 @@ Tip: click any example in the INDEX panel to run it automatically.
         String response = "{ \"output\": " + toJsonString(output)
                         + ", \"chart\": " + chartJson + " }";
 
+        sendJsonResponse(exchange, response);
+    }
+
+    private static void sendJsonResponse(HttpExchange exchange, String response) throws IOException {
         byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, bytes.length);

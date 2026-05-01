@@ -301,9 +301,8 @@ button.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 const { createApp } = Vue;
 
 // ── Example catalog (mirrors ExampleRegistry.java) ────────────────────────
-// The MiniServer /examples endpoint is the source of truth.
-// This local list is only a fallback when the server is unavailable.
-const FALLBACK_EXAMPLES = [
+// This is used only to render the index panel without a network call.
+const EXAMPLES = [
   // Neural Networks
   { key:"BasicNN",     cat:"Neural Networks", description:"Basic neural network demo" },
   { key:"MLPReg1",     cat:"Neural Networks", description:"MLP Regression - sin(x) dataset" },
@@ -348,7 +347,6 @@ createApp({
       ],
       lastOutput: "",
       lastChart:  null,
-      examples:   FALLBACK_EXAMPLES,
     };
   },
 
@@ -361,42 +359,23 @@ createApp({
     },
     groupedExamples() {
       const groups = {};
-      for (const ex of this.examples) {
+      for (const ex of EXAMPLES) {
         if (!groups[ex.cat]) groups[ex.cat] = [];
         groups[ex.cat].push(ex);
       }
       return groups;
     },
     totalExamples() {
-      return this.examples.length;
+      return EXAMPLES.length;
     }
   },
 
   mounted() {
     this.checkServer();
-    this.loadExamples();
     setInterval(this.checkServer, 10000);
   },
 
   methods: {
-    async loadExamples() {
-      try {
-        const response = await fetch("http://localhost:8086/examples");
-        if (!response.ok) return;
-
-        const data = await response.json();
-        if (!Array.isArray(data.examples)) return;
-
-        this.examples = data.examples.map(ex => ({
-          key: ex.key,
-          cat: ex.category,
-          description: ex.description
-        }));
-      } catch {
-        this.examples = FALLBACK_EXAMPLES;
-      }
-    },
-
     async checkServer() {
       try {
         const r = await fetch("http://localhost:8086/health");
