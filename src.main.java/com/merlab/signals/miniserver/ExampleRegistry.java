@@ -78,6 +78,14 @@ public class ExampleRegistry {
             new ExampleEntry("com.merlab.nn.examples.LogisticRegressionEnhancedExample",
                 "Neural Networks", "Logistic Regression enhanced with Plotly"));
 
+        map.put("LogRegLinear",
+            new ExampleEntry("com.merlab.nn.examples.LogisticRegressionLinearExample",
+                "Neural Networks", "Logistic Regression linear separation"));
+
+        map.put("LogRegRadial",
+            new ExampleEntry("com.merlab.nn.examples.LogisticRegressionRadialFeatureExample",
+                "Neural Networks", "Logistic Regression with radial feature"));
+
         map.put("LogRegSimple",
             new ExampleEntry("com.merlab.nn.examples.LogisticRegressionSimpleExample2",
                 "Neural Networks", "Logistic Regression simple v2"));
