@@ -37,27 +37,3 @@ public class AddOp implements BinaryLengthModeOp {
     @Override public String getCategory() { return "Arithmetic"; }
     
 }
-/*
-public class AddOp implements RPNOperation {
-
-    @Override
-    public int arity() {
-        return 2;
-    }
-
-    @Override
-    public Object apply(List<Object> args) {
-        // args: [ signalA, signalB ]
-        Signal a = (Signal) args.get(0);
-        Signal b = (Signal) args.get(1);
-        List<Double> sum = SignalProcessor.addSignals(
-            a.getValues(),
-            b.getValues(), 
-            LengthMode.REQUIRE_EQUAL 
-            //LengthMode.PAD_WITH_ZEROS
-        );
-        return new Signal(sum);
-    }
-}
-*/
-

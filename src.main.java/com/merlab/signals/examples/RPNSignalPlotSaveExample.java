@@ -24,7 +24,7 @@ public class RPNSignalPlotSaveExample {
         );
 
         DatabaseManager db = new DatabaseManager(
-            "jdbc:mariadb://localhost:3306/test", "root", "root"
+            "jdbc:mariadb://localhost:3306/test", "root", "12345"
         );
 
         // RPN Engine y stack

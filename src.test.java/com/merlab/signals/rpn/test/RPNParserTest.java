@@ -6,8 +6,6 @@ import com.merlab.signals.rpn.RPNStack;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.NoSuchElementException;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -95,9 +93,9 @@ class RPNParserTest {
     void testInsufficientArgumentsThrows() {
         // faltan operandos para "+" → IllegalStateException
     	
-        assertThrows(NoSuchElementException.class, () ->
-            parser.parseAndExecute("sig1 +", vars, stack)
-        );
+        assertThrows(IllegalStateException.class, () ->
+	        parser.parseAndExecute("sig1 +", vars, stack)
+	    );
         
     }
 
