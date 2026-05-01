@@ -70,26 +70,3 @@ public class MultiplyOp implements RPNOperation {
     @Override public String getCategory() { return "Arithmetic"; }
 }
 
-
-/**
- * Pops two Signals, multiplies element-wise, pushes the result.
- */
-/*
-public class MultiplyOp implements RPNOperation {
-
-    @Override
-    public int arity() {
-        return 2;
-    }
-
-    @Override
-    public Object apply(List<Object> args) {
-        Signal a = (Signal) args.get(0);
-        Signal b = (Signal) args.get(1);
-        List<Double> prod = SignalProcessor.multiplySignals(
-            a.getValues(), b.getValues(), LengthMode.REQUIRE_EQUAL
-        );
-        return new Signal(prod);
-    }
-}
-*/
