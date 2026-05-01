@@ -72,7 +72,7 @@ Available commands:
   version           Show server version
   list              List all runnable examples
   run <key>         Run an example  (e.g.  run KMeans)
-  run <key>         Examples: run MLPReg1, run SOM, run SVMRBF
+  run <key>         Examples: run MLPReg1, run KMeans, run LogRegRadial
 
 Tip: click any example in the INDEX panel to run it automatically.
 """;
