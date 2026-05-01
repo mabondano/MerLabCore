@@ -18,6 +18,7 @@ module MerLabSignalStudio {
     requires org.junit.jupiter.params;
     requires org.json;
     requires java.net.http;
+    requires jdk.httpserver;
     requires java.desktop;         // <— para AWT/Swing
     requires javafx.controls;
     requires javafx.web;

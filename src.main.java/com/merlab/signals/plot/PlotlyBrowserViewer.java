@@ -1,5 +1,6 @@
 package com.merlab.signals.plot;
 
+import com.merlab.signals.miniserver.PlotlyCapture;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,10 @@ public class PlotlyBrowserViewer {
      */
 	//Copiar también plotly.min.js al directorio temporal
 	public static void showInBrowser(String htmlContent) throws IOException {
+	    if (PlotlyCapture.isCapturing()) {
+	        PlotlyCapture.capture(htmlContent);
+	        return;
+	    }
 	    // 1) Crear directorio temporal
 	    Path dir = Files.createTempDirectory("plotly_tmp");
 	    // 2) Copiar el JS desde resources a ese dir

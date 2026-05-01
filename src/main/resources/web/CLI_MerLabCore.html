@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>MerLabCore CLI</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #151a1f 0%, #080b0f 55%, #050608 100%);
+    color: #f5f5f5;
+    font-family: "Consolas", "Courier New", monospace;
+}
+
+#app { min-height: 100vh; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+
+/* ── HEADER ── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,213,0,0.2);
+    padding-bottom: 16px;
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.logo {
+    width: 50px; height: 50px;
+    border: 3px solid #ffd500; color: #ffd500;
+    border-radius: 12px; display: grid; place-items: center;
+    font-size: 26px; font-weight: bold;
+}
+.title { font-family: Arial, sans-serif; font-size: 30px; font-weight: 800; }
+.title span { color: #ffd500; }
+.subtitle { font-family: Arial, sans-serif; color: #aeb4bd; font-size: 16px; margin-top: 3px; }
+.status { display: flex; align-items: center; gap: 20px; }
+.badge {
+    border: 1px solid rgba(255,213,0,0.4); color: #ffd500;
+    padding: 8px 16px; border-radius: 10px;
+    box-shadow: 0 0 12px rgba(255,213,0,0.15);
+    font-size: 14px;
+}
+.connected { color: #39ff64; font-weight: bold; font-size: 14px; }
+.connected::before { content: "●"; margin-right: 8px; }
+.disconnected { color: #ff4444; font-weight: bold; font-size: 14px; }
+.disconnected::before { content: "●"; margin-right: 8px; }
+
+/* ── MAIN GRID ── */
+.main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 12px;
+    flex: 1;
+}
+
+/* ── PANELS ── */
+.panel {
+    border: 1px solid rgba(255,213,0,0.25);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(20,24,29,0.96), rgba(8,11,15,0.97));
+    box-shadow: 0 0 18px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+}
+.panel-console { grid-row: 1 / 3; min-height: 540px; }
+.panel-index   { min-height: 260px; }
+.panel-output  { min-height: 270px; }
+
+.panel-header {
+    color: #ffd500;
+    border-bottom: 1px solid rgba(255,213,0,0.25);
+    padding: 13px 20px;
+    font-weight: bold; font-size: 17px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+}
+.panel-body {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* ── CONSOLE ── */
+.console { white-space: pre-wrap; line-height: 1.55; font-size: 15px; }
+.yellow  { color: #ffd500; }
+.green   { color: #3dff5f; }
+.blue    { color: #35bfff; }
+.pink    { color: #ff56d6; }
+.muted   { color: #aeb4bd; }
+.red     { color: #ff4444; }
+
+/* ── EXAMPLE INDEX ── */
+.category-label {
+    color: #ffd500; font-size: 12px; font-weight: bold;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 10px 0 6px 0; opacity: 0.7;
+}
+.category-label:first-child { margin-top: 0; }
+
+.example-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+
+.ex-btn {
+    background: rgba(255,213,0,0.08);
+    border: 1px solid rgba(255,213,0,0.35);
+    color: #ffd500;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-family: "Consolas", monospace;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.ex-btn:hover { background: rgba(255,213,0,0.22); }
+.ex-btn.running {
+    background: rgba(53,191,255,0.15);
+    border-color: #35bfff;
+    color: #35bfff;
+    animation: pulse 1s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ── OUTPUT / CHART PANEL ── */
+.output-area {
+    font-size: 14px; line-height: 1.5;
+    white-space: pre-wrap;
+}
+.chart-frame {
+    width: 100%; border: none;
+    border-radius: 8px;
+    background: #fff;
+    min-height: 240px;
+}
+.no-output { color: #aeb4bd; font-style: italic; }
+
+/* ── INPUT BAR ── */
+.bottom {
+    border: 1px solid rgba(255,213,0,0.2);
+    border-radius: 12px;
+    background: rgba(10,13,18,0.97);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.input-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 160px;
+    gap: 12px; padding: 10px 12px;
+}
+.prompt-icon {
+    border: 1px solid rgba(255,213,0,0.45); color: #ffd500;
+    border-radius: 8px; display: grid; place-items: center;
+    font-size: 26px; font-weight: bold;
+}
+input {
+    width: 100%;
+    background: #0b0f14;
+    border: 2px solid #ffd500; color: #ffd500;
+    border-radius: 8px; padding: 0 18px;
+    font-size: 16px; font-family: "Consolas", monospace; outline: none;
+}
+input::placeholder { color: #555; }
+button.run-btn {
+    background: linear-gradient(180deg, #ffd500, #f0b800);
+    color: #080b0f; border: none; border-radius: 8px;
+    font-size: 16px; font-weight: bold; cursor: pointer;
+}
+button.run-btn:hover { filter: brightness(1.08); }
+button.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.footer {
+    border-top: 1px solid rgba(255,213,0,0.1);
+    padding: 8px 18px; color: #7a828d;
+    display: flex; justify-content: space-between;
+    font-family: Arial, sans-serif; font-size: 12px;
+}
+.clear-btn { color: #ffd500; cursor: pointer; font-weight: bold; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,213,0,0.06); }
+::-webkit-scrollbar-thumb { background: #ffd500; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <div class="title"><span>MerLab</span>Core CLI</div>
+        <div class="subtitle">ML Pipeline · Signal Processing · Neural Networks</div>
+      </div>
+    </div>
+    <div class="status">
+      <div class="badge">MerLabCore MiniServer v1.0</div>
+      <div :class="serverOk ? 'connected' : 'disconnected'">
+        {{ serverOk ? 'CONNECTED' : 'OFFLINE' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main">
+
+    <!-- LEFT: CONSOLE -->
+    <div class="panel panel-console">
+      <div class="panel-header">
+        <span>&gt;_ CONSOLE</span>
+        <span style="cursor:pointer;font-size:18px" @click="clearConsole" title="Clear">🗑</span>
+      </div>
+      <div class="panel-body console" ref="consoleEl" v-html="consoleHtml"></div>
+    </div>
+
+    <!-- RIGHT TOP: EXAMPLE INDEX -->
+    <div class="panel panel-index">
+      <div class="panel-header">
+        <span>⊞ EXAMPLE INDEX</span>
+        <span class="muted" style="font-size:13px;font-weight:normal">
+          {{ totalExamples }} examples
+        </span>
+      </div>
+      <div class="panel-body">
+        <template v-for="(cat, catName) in groupedExamples" :key="catName">
+          <div class="category-label">{{ catName }}</div>
+          <div class="example-list">
+            <button
+              v-for="ex in cat"
+              :key="ex.key"
+              class="ex-btn"
+              :class="{ running: runningKey === ex.key }"
+              :disabled="isRunning"
+              @click="runExample(ex.key)"
+              :title="ex.description"
+            >
+              {{ ex.key }}
+            </button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- RIGHT BOTTOM: OUTPUT / CHART -->
+    <div class="panel panel-output">
+      <div class="panel-header">
+        <span>📊 OUTPUT / CHART</span>
+        <span class="muted" style="font-size:13px;font-weight:normal">
+          {{ chartMode ? 'Plotly Chart' : 'Console Output' }}
+        </span>
+      </div>
+      <div class="panel-body">
+
+        <!-- No output yet -->
+        <div v-if="!lastOutput && !lastChart" class="no-output">
+          Run an example to see output here.
+        </div>
+
+        <!-- Chart (Plotly HTML iframe) -->
+        <template v-if="lastChart">
+          <iframe
+            class="chart-frame"
+            :srcdoc="lastChart"
+            sandbox="allow-scripts"
+          ></iframe>
+        </template>
+
+        <!-- Console text output (shown below chart or alone) -->
+        <div v-if="lastOutput" class="output-area" v-html="formatOutput(lastOutput)"></div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INPUT BAR -->
+  <div class="bottom">
+    <div class="input-row">
+      <div class="prompt-icon">&gt;</div>
+      <input
+        v-model="command"
+        @keyup.enter="sendCommand"
+        placeholder="Type command: help · list · run KMeans · run MLPReg1 ..."
+        :disabled="isRunning"
+        autofocus
+      />
+      <button class="run-btn" @click="sendCommand" :disabled="isRunning">
+        {{ isRunning ? '⏳ ...' : '▶ RUN' }}
+      </button>
+    </div>
+    <div class="footer">
+      <span>ⓘ Press Enter · Commands: help, version, list, run &lt;key&gt;</span>
+      <span class="clear-btn" @click="clearConsole">🗑 Clear</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const { createApp } = Vue;
+
+// ── Example catalog (mirrors ExampleRegistry.java) ────────────────────────
+// This is used only to render the index panel without a network call.
+const EXAMPLES = [
+  // Neural Networks
+  { key:"BasicNN",     cat:"Neural Networks", description:"Basic neural network demo" },
+  { key:"MLPReg1",     cat:"Neural Networks", description:"MLP Regression - sin(x) dataset" },
+  { key:"MLPReg2",     cat:"Neural Networks", description:"MLP Regression - house prices" },
+  { key:"MLPReg3",     cat:"Neural Networks", description:"MLP Regression - mini-batches" },
+  { key:"MLPReg4",     cat:"Neural Networks", description:"MLP Regression - StandardScaler" },
+  { key:"MLPReg5",     cat:"Neural Networks", description:"MLP Regression - BatchNorm" },
+  { key:"MLPReg6",     cat:"Neural Networks", description:"MLP Regression - Dropout" },
+  { key:"MLPReg7",     cat:"Neural Networks", description:"MLP Regression - LR schedule" },
+  { key:"MLPReg8",     cat:"Neural Networks", description:"MLP Regression - MSE log" },
+  { key:"MLPReg9",     cat:"Neural Networks", description:"MLP Regression - full Plotly" },
+  { key:"MLPClass1",   cat:"Neural Networks", description:"MLP Classification - basic" },
+  { key:"MLPClass2",   cat:"Neural Networks", description:"MLP Classification - example 10" },
+  { key:"MLPClass3",   cat:"Neural Networks", description:"MLP Classification - example 11" },
+  { key:"LogReg",      cat:"Neural Networks", description:"Logistic Regression basic" },
+  { key:"LogRegEnh",   cat:"Neural Networks", description:"Logistic Regression enhanced" },
+  { key:"LogRegSimple",cat:"Neural Networks", description:"Logistic Regression simple v2" },
+  { key:"MedLogReg",   cat:"Neural Networks", description:"Medical Logistic Regression" },
+  { key:"KNN",         cat:"Neural Networks", description:"K-Nearest Neighbors" },
+  // Clustering
+  { key:"KMeans",   cat:"Clustering", description:"K-Means clustering with centroids" },
+  { key:"KMedians", cat:"Clustering", description:"K-Medians clustering" },
+  { key:"SOM",      cat:"Clustering", description:"Self-Organizing Map (Kohonen)" },
+  // Data
+  { key:"RealData",     cat:"Data", description:"Real data from CSV" },
+  { key:"RealDataJSON", cat:"Data", description:"Real data from JSON" },
+];
+
+createApp({
+  data() {
+    return {
+      command:    "",
+      serverOk:   false,
+      isRunning:  false,
+      runningKey: null,
+      consoleLines: [
+        '<span class="yellow">MerLabCore CLI started.</span>',
+        '<span class="muted">Type <b>help</b> for commands or click an example in the INDEX panel.</span>',
+        ''
+      ],
+      lastOutput: "",
+      lastChart:  null,
+    };
+  },
+
+  computed: {
+    consoleHtml() {
+      return this.consoleLines.join("<br>");
+    },
+    chartMode() {
+      return !!this.lastChart;
+    },
+    groupedExamples() {
+      const groups = {};
+      for (const ex of EXAMPLES) {
+        if (!groups[ex.cat]) groups[ex.cat] = [];
+        groups[ex.cat].push(ex);
+      }
+      return groups;
+    },
+    totalExamples() {
+      return EXAMPLES.length;
+    }
+  },
+
+  mounted() {
+    this.checkServer();
+    setInterval(this.checkServer, 10000);
+  },
+
+  methods: {
+    async checkServer() {
+      try {
+        const r = await fetch("http://localhost:8086/health");
+        this.serverOk = r.ok;
+      } catch {
+        this.serverOk = false;
+      }
+    },
+
+    async sendCommand() {
+      const cmd = this.command.trim();
+      if (!cmd || this.isRunning) return;
+      this.command = "";
+      await this.execute(cmd);
+    },
+
+    async runExample(key) {
+      if (this.isRunning) return;
+      this.runningKey = key;
+      await this.execute("run " + key);
+      this.runningKey = null;
+    },
+
+    async execute(cmd) {
+      this.isRunning = true;
+      this.consoleLines.push('<span class="yellow">&gt; ' + this.esc(cmd) + '</span>');
+
+      try {
+        const response = await fetch("http://localhost:8086/command", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ command: cmd })
+        });
+
+        const data = await response.json();
+
+        // Update console
+        this.consoleLines.push(this.formatOutput(data.output));
+        this.consoleLines.push("");
+
+        // Update output panel
+        this.lastOutput = data.output || "";
+        this.lastChart  = data.chart  || null;
+
+        // Auto-scroll console
+        this.$nextTick(() => {
+          const el = this.$refs.consoleEl;
+          if (el) el.scrollTop = el.scrollHeight;
+        });
+
+      } catch (err) {
+        this.consoleLines.push('<span class="red">ERROR: Cannot reach MerLabCore MiniServer on port 8086.</span>');
+        this.consoleLines.push('<span class="muted">Start MerLabCoreMiniServer.java first.</span>');
+        this.consoleLines.push("");
+        this.serverOk = false;
+      } finally {
+        this.isRunning = false;
+      }
+    },
+
+    formatOutput(text) {
+      if (!text) return '<span class="muted">(no output)</span>';
+      return this.esc(text)
+        .replaceAll("ERROR",       '<span class="red">ERROR</span>')
+        .replaceAll("\\[OK\\]",    '<span class="green">[OK]</span>')
+        .replaceAll("OK",          '<span class="green">OK</span>')
+        .replaceAll("Finished",    '<span class="green">Finished</span>')
+        .replaceAll("Running",     '<span class="blue">Running</span>')
+        .replaceAll("Epoch",       '<span class="blue">Epoch</span>')
+        .replaceAll("MSE",         '<span class="pink">MSE</span>')
+        .replaceAll("Accuracy",    '<span class="pink">Accuracy</span>');
+    },
+
+    clearConsole() {
+      this.consoleLines = [
+        '<span class="yellow">Console cleared.</span>',
+        '<span class="muted">Type <b>help</b> for commands.</span>',
+        ''
+      ];
+      this.lastOutput = "";
+      this.lastChart  = null;
+    },
+
+    esc(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+  }
+}).mount("#app");
+</script>
+</body>
+</html>
