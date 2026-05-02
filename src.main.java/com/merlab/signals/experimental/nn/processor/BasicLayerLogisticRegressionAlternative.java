@@ -8,13 +8,16 @@ import com.merlab.signals.nn.processor.Layer;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
 
 /**
- * Alternative logistic regression design kept for comparison.
- * This version delegates prediction to a single Layer.
+ * Basic historical layer-based logistic regression alternative.
+ *
+ * The active layer-based implementation is
+ * com.merlab.signals.nn.processor.LayerLogisticRegressionProcessor, which also
+ * exposes getLayer() and copy() for training.
  */
-public class LogisticRegressionLayerAlternative implements NeuralNetworkProcessor {
+public class BasicLayerLogisticRegressionAlternative implements NeuralNetworkProcessor {
     private final Layer layer;
 
-    public LogisticRegressionLayerAlternative(Layer layer) {
+    public BasicLayerLogisticRegressionAlternative(Layer layer) {
         this.layer = Objects.requireNonNull(layer);
     }
 
