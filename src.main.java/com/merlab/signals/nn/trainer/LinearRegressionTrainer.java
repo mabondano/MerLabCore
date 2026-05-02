@@ -7,7 +7,6 @@ import com.merlab.signals.nn.model.LinearRegressionModel;
 import com.merlab.signals.nn.model.RegressionModel;
 import com.merlab.signals.nn.model.SimpleRegressionModel;
 import com.merlab.signals.nn.processor.LinearProcessor;
-import com.merlab.signals.nn.processor.SimpleLinearProcessor;
 import com.merlab.signals.nn.trainer.simple.SimpleRegressionTrainer;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
 

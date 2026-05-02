@@ -11,11 +11,11 @@ import com.merlab.signals.nn.model.RegressionModel;
 import com.merlab.signals.nn.model.SimpleRegressionModel;
 import com.merlab.signals.nn.processor.LinearProcessor;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
-import com.merlab.signals.nn.processor.SimpleLinearProcessor;
 import com.merlab.signals.nn.trainer.LinearRegressionTrainer;
 import com.merlab.signals.nn.trainer.RegressionTrainer;
 import com.merlab.signals.nn.trainer.simple.SimpleLinearRegressionTrainer4;
 import com.merlab.signals.nn.trainer.simple.SimpleRegressionTrainer;
+import com.merlab.signals.persistence.DatabaseConfig;
 import com.merlab.signals.persistence.DatabaseManager;
 import com.merlab.signals.core.SignalStack;
 
@@ -50,9 +50,9 @@ public class RealDataHTTPFactoryExample {
 
         // 4. Preparar el procesador lineal y el manager
         NeuralNetworkProcessor proc =
-            new SimpleLinearProcessor(model.getWeights(), model.getBias());
+            new LinearProcessor(model.getWeights(), model.getBias());
         SignalStack stack = new SignalStack();
-        DatabaseManager db = new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root");
+        DatabaseManager db = DatabaseConfig.loadLocal().createDatabaseManager();
         NeuralNetworkManager nnManager = new NeuralNetworkManager(stack, proc, db);
 
         // 5. Inferencia de ejemplo

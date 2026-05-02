@@ -22,6 +22,10 @@ public class ExampleRegistry {
             new ExampleEntry("com.merlab.nn.examples.BasicNNExample",
                 "Neural Networks", "Basic neural network demo"));
 
+        map.put("BasicNN4",
+            new ExampleEntry("com.merlab.nn.examples.BasicNNExample4",
+                "Neural Networks", "Basic neural network with linear processor"));
+
         map.put("MLPReg1",
             new ExampleEntry("com.merlab.nn.examples.MLPRegressionExample",
                 "Neural Networks", "MLP Regression - sin(x) dataset"));
@@ -115,6 +119,18 @@ public class ExampleRegistry {
         map.put("RealData",
             new ExampleEntry("com.merlab.signals.examples.RealDataExample",
                 "Data", "Real data loading from CSV"));
+
+        map.put("RealDataFactory",
+            new ExampleEntry("com.merlab.signals.examples.RealDataFactoryExample",
+                "Data", "Real data loading from CSV factory"));
+
+        map.put("RealDataDBFactory",
+            new ExampleEntry("com.merlab.signals.examples.RealDataFactoryFromDBExample",
+                "Data", "Real data loading from database factory"));
+
+        map.put("RealDataHTTP",
+            new ExampleEntry("com.merlab.signals.examples.RealDataHTTPFactoryExample",
+                "Data", "Real data loading from HTTP factory"));
 
         map.put("RealDataJSON",
             new ExampleEntry("com.merlab.signals.examples.RealDataJSONFactoryExample",

@@ -13,9 +13,9 @@ import com.merlab.signals.nn.processor.LinearProcessor;
 import com.merlab.signals.nn.processor.ConfigPerceptronProcessor;
 import com.merlab.signals.nn.processor.ActivationFunctions;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
-import com.merlab.signals.nn.processor.SimpleLinearProcessor;
 import com.merlab.signals.nn.manager.NeuralNetworkManager;
 import com.merlab.signals.core.SignalStack;
+import com.merlab.signals.persistence.DatabaseConfig;
 import com.merlab.signals.persistence.DatabaseManager;
 
 import java.nio.file.Path;
@@ -48,7 +48,7 @@ public class BasicNNExample4 {
 
         // 4.a) Inferencia lineal (raw)
         NeuralNetworkProcessor linProc =
-            new SimpleLinearProcessor(model.getWeights(), model.getBias());
+            new LinearProcessor(model.getWeights(), model.getBias());
 
         // 4.b) Inferencia perceptrón (sigmoide)
         NeuralNetworkProcessor percProc =
@@ -83,7 +83,7 @@ public class BasicNNExample4 {
 
         // 5. Si quieres usar el manager:
         SignalStack stack = new SignalStack();
-        DatabaseManager db = new DatabaseManager("jdbc:mariadb://localhost:3306/test", "root", "root");
+        DatabaseManager db = DatabaseConfig.loadLocal().createDatabaseManager();
         NeuralNetworkManager nnm = new NeuralNetworkManager(stack, percProc, db);
 
         Signal feat10 = FeatureExtractor.extractFeaturesMean(new Signal(){{
