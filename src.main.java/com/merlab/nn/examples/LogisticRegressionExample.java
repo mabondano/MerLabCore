@@ -5,11 +5,11 @@ import com.merlab.signals.data.DataSet;
 import com.merlab.signals.data.DataSetBuilder;
 import com.merlab.signals.nn.processor.Layer;
 import com.merlab.signals.nn.processor.LogisticRegressionProcessor;
-import com.merlab.signals.nn.processor.SimpleLogisticRegressionProcessor;
+import com.merlab.signals.nn.processor.LayerLogisticRegressionProcessor;
 import com.merlab.signals.nn.trainer.BackpropLogisticTrainer;
 import com.merlab.signals.nn.trainer.LogisticTrainer;
-import com.merlab.signals.nn.trainer.SimpleBackpropLogisticTrainer;
-import com.merlab.signals.nn.trainer.SimpleLogisticTrainer;
+import com.merlab.signals.nn.trainer.LayerBackpropLogisticTrainer;
+import com.merlab.signals.nn.trainer.LayerLogisticTrainer;
 import com.merlab.signals.plot.PlotlyBrowserViewer;
 
 import java.io.IOException;
@@ -53,11 +53,11 @@ public class LogisticRegressionExample {
             com.merlab.signals.nn.processor.ActivationFunctions.SIGMOID
         );
         // 3) Construir el procesador de regresión logística a partir de ese Layer
-        SimpleLogisticRegressionProcessor logreg =
-            new SimpleLogisticRegressionProcessor(Objects.requireNonNull(lrLayer));
+        LayerLogisticRegressionProcessor logreg =
+            new LayerLogisticRegressionProcessor(Objects.requireNonNull(lrLayer));
 
         // 4) Entrenar con backprop
-        SimpleLogisticTrainer trainer = new SimpleBackpropLogisticTrainer();
+        LayerLogisticTrainer trainer = new LayerBackpropLogisticTrainer();
         int epochs    = 2000;
         double lr     = 0.5;
         int batchSize = 16;
@@ -75,7 +75,7 @@ public class LogisticRegressionExample {
                           .map(ds.getTargets()::get)
                           .collect(Collectors.toList())
                 );
-                logreg = (SimpleLogisticRegressionProcessor) trainer.train(
+                logreg = trainer.train(
                     logreg, batch, 1, lr
                 );
             }
@@ -164,7 +164,7 @@ public class LogisticRegressionExample {
     }
 
     /** Calcula la accuracy (%) sobre todo el DataSet */
-    private static double computeAccuracy(SimpleLogisticRegressionProcessor model, DataSet ds) {
+    private static double computeAccuracy(LayerLogisticRegressionProcessor model, DataSet ds) {
         long correct = 0;
         for (int i = 0; i < ds.getInputs().size(); i++) {
             Signal in    = ds.getInputs().get(i);

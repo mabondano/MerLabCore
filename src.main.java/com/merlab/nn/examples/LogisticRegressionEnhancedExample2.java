@@ -8,11 +8,11 @@ import com.merlab.signals.data.DataLoaderConfig;
 import com.merlab.signals.data.DataLoaderFactory;
 import com.merlab.signals.nn.processor.Layer;
 import com.merlab.signals.nn.processor.ActivationFunctions;
-import com.merlab.signals.nn.processor.SimpleLogisticRegressionProcessor;
+import com.merlab.signals.nn.processor.LayerLogisticRegressionProcessor;
 import com.merlab.signals.nn.trainer.BackpropLogisticTrainer;
 import com.merlab.signals.nn.trainer.LogisticTrainer;
-import com.merlab.signals.nn.trainer.SimpleBackpropLogisticTrainer;
-import com.merlab.signals.nn.trainer.SimpleLogisticTrainer;
+import com.merlab.signals.nn.trainer.LayerBackpropLogisticTrainer;
+import com.merlab.signals.nn.trainer.LayerLogisticTrainer;
 import com.merlab.signals.plot.PlotlyBrowserViewer;
 
 import java.util.ArrayList;
@@ -56,12 +56,12 @@ public class LogisticRegressionEnhancedExample2 {
         // --------------------------------------------
         // Capa de 1 neurona (salida), 2 entradas (x,y), con Sigmoid
         Layer logLayer = initLayer(1, 2, new Random(1), ActivationFunctions.SIGMOID);
-        SimpleLogisticRegressionProcessor logreg = new SimpleLogisticRegressionProcessor(logLayer);
+        LayerLogisticRegressionProcessor logreg = new LayerLogisticRegressionProcessor(logLayer);
 
         // --------------------------------------------
         // 3) Entrenar con BackpropLogisticTrainer
         // --------------------------------------------
-        SimpleLogisticTrainer trainer = new SimpleBackpropLogisticTrainer();
+        LayerLogisticTrainer trainer = new LayerBackpropLogisticTrainer();
         int epochs = 2000;
         double lr = 0.5;
         int batchSize = 16;
@@ -85,7 +85,7 @@ public class LogisticRegressionEnhancedExample2 {
                 DataSet batch = new DataSet(xb, yb);
 
                 // Llamamos a train() para entrenar 1 epoch sobre ese mini‐batch
-                logreg = (SimpleLogisticRegressionProcessor) trainer.train(logreg, batch, 1, lr);
+                logreg = trainer.train(logreg, batch, 1, lr);
             }
 
             if (e % 500 == 0) {
@@ -116,7 +116,7 @@ public class LogisticRegressionEnhancedExample2 {
             }
         }
 
-	     // --- Después de haber entrenado ’logreg’ (SimpleLogisticRegressionProcessor) ---
+	     // --- Después de haber entrenado ’logreg’ (LayerLogisticRegressionProcessor) ---
 	     // w1  = peso para x
 	     // w2  = peso para y
 	     // b   = bias
@@ -284,7 +284,7 @@ public class LogisticRegressionEnhancedExample2 {
         PlotlyBrowserViewer.showInBrowser(html2);
     }
 
-    private static double computeAccuracy(SimpleLogisticRegressionProcessor model, DataSet ds) {
+    private static double computeAccuracy(LayerLogisticRegressionProcessor model, DataSet ds) {
         long correct = 0;
         int total = ds.getInputs().size();
         for (int i = 0; i < total; i++) {
