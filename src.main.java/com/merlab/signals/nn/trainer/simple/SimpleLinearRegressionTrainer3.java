@@ -1,14 +1,11 @@
 package com.merlab.signals.nn.trainer.simple;
 
 import com.merlab.signals.core.Signal;
-import com.merlab.signals.nn.processor.SimplePerceptronProcessor;
 
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
-import com.merlab.signals.nn.processor.ActivationFunction;
 import com.merlab.signals.nn.processor.ActivationFunctions;
 import com.merlab.signals.nn.processor.ConfigPerceptronProcessor;
-import com.merlab.signals.nn.processor.LinearProcessor;
 import com.merlab.signals.nn.processor.NeuralNetworkProcessor;
 
 import java.nio.file.Files;
@@ -18,7 +15,7 @@ import java.util.List;
 
 /**
  * Entrenador basado en regresión lineal múltiple.
- * Calcula coeficientes y crea un SimplePerceptronProcessor con ellos.
+ * Calcula coeficientes y crea un ConfigPerceptronProcessor con ellos.
  */
 public class SimpleLinearRegressionTrainer3 implements  SimpleModelTrainer {
 
